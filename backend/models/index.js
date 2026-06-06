@@ -21,11 +21,11 @@ const db = {};
 db.Sequelize = Sequelize;
 db.sequelize = sequelize;
 
-db.User    = require('./user')(sequelize, Sequelize);
-db.Student = require('./student')(sequelize, Sequelize);  // ← THIS was missing
-db.Mark    = require('./mark')(sequelize, Sequelize);
-db.Fee     = require('./fee')(sequelize, Sequelize);
-db.Attendance = require('./attendance')(sequelize, Sequelize);
-db.Remark  = require('./remark')(sequelize, Sequelize);
+db.User       = require('./user')(sequelize, Sequelize);
+db.Student    = require('./student')(sequelize, Sequelize);
+db.Mark       = require('./mark')(sequelize, Sequelize);
+db.Fee        = require('./fee')(sequelize, Sequelize);
+db.Attendance = require('./Attendance')(sequelize, Sequelize);  
+db.Remark     = require('./Remark')(sequelize, Sequelize);      
 
 module.exports = db;
