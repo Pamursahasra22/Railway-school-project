@@ -1,4 +1,6 @@
 const path = require('path');
+// Note: On Render, you should set Environment Variables in the Dashboard.
+// This line won't hurt, but it won't find a .env file on Render (which is good for security).
 require('dotenv').config({ path: path.join(__dirname, '.env') });
 
 const express = require('express');
@@ -29,27 +31,23 @@ app.use('/api/marks', markRoutes);
 app.use('/api/fees', feeRoutes);
 app.use('/api/attendance', attendanceRoutes);
 
-// --- FRONTEND INTEGRATION (ONE LINK SETUP) ---
-// Serve all static files (CSS, JS, Images) from the frontend folder
+// --- FRONTEND INTEGRATION ---
 app.use(express.static(path.join(__dirname, '..', 'frontend')));
 
-// Main Route (Login/Index)
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, '..', 'frontend', 'index.html'));
 });
 
-// Fallback: This allows direct links to HTML files or React-style routing
+// Fallback for SPA routing or direct HTML access
 app.get('*', (req, res) => {
-  // If the request isn't an API call, send the index.html
   if (!req.path.startsWith('/api')) {
     res.sendFile(path.join(__dirname, '..', 'frontend', 'index.html'));
   }
 });
-// ----------------------------------------------
 
 // Error Handling Middleware
 app.use((err, req, res, next) => {
-  console.error(err);
+  console.error('Global Error Handler:', err);
   res.status(500).json({ message: err.message || 'Internal server error' });
 });
 
@@ -71,9 +69,10 @@ async function seedDefaultUsers() {
           role: user.role,
           name: user.name
         });
+        console.log(`Created default user: ${user.email}`);
       }
     } catch (e) {
-      console.log(`Note: User ${user.email} might already exist.`);
+      console.log(`Note: User ${user.email} initialization skipped (already exists or error).`);
     }
   }
 }
@@ -82,22 +81,25 @@ async function startServer() {
   try {
     // 1. Connect to TiDB Cloud
     await db.sequelize.authenticate();
-    console.log('Database connection established.');
+    console.log('✅ Database connection established.');
 
-    // 2. CREATE TABLES (I uncommented this line to fix the "Unknown Column" error)
+    // 2. SYNC TABLES
+    // Use { alter: false } or just sync() to prevent TiDB constraint errors.
+    // IF YOU STILL GET ERRORS: Change this to .sync({ force: true }) ONCE, 
+    // deploy it, then change it back to .sync().
     await db.sequelize.sync(); 
-    console.log('Database tables verified and created.');
+    console.log('✅ Database tables verified.');
 
     // 3. Verify Default Users
     await seedDefaultUsers();
-    console.log('Default users verified.');
+    console.log('✅ Default users verified.');
 
-    // 4. Start listening on the port provided by Render
+    // 4. Start listening
     app.listen(PORT, () => {
-      console.log(`Server running on port ${PORT}`);
+      console.log(`🚀 Server running on port ${PORT}`);
     });
   } catch (error) {
-    console.error('Failed to start server:', error);
+    console.error('❌ Failed to start server:', error);
     process.exit(1);
   }
 }
