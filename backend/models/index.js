@@ -10,12 +10,10 @@ const sequelize = new Sequelize(
     dialect: 'mysql',
     dialectOptions: {
       ssl: {
-        // TiDB Cloud requires SSL. 
-        // This setting ensures the connection is encrypted.
-        rejectUnauthorized: false 
+        rejectUnauthorized: false
       }
     },
-    logging: false, // Set to console.log if you want to see SQL queries
+    logging: false,
   }
 );
 
@@ -23,8 +21,11 @@ const db = {};
 db.Sequelize = Sequelize;
 db.sequelize = sequelize;
 
-// Import your models here (User, Student, etc.)
-db.User = require('./user')(sequelize, Sequelize);
-// ... add your other models ...
+db.User    = require('./user')(sequelize, Sequelize);
+db.Student = require('./student')(sequelize, Sequelize);  // ← THIS was missing
+db.Mark    = require('./mark')(sequelize, Sequelize);
+db.Fee     = require('./fee')(sequelize, Sequelize);
+db.Attendance = require('./attendance')(sequelize, Sequelize);
+db.Remark  = require('./remark')(sequelize, Sequelize);
 
 module.exports = db;
