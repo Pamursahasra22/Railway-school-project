@@ -1,25 +1,23 @@
 module.exports = (sequelize, DataTypes) => {
-  const User = sequelize.define('user', {
+  return sequelize.define('user', {
     email: {
-      type: sequelize.Sequelize.DataTypes.STRING,
+      type: DataTypes.STRING,
       allowNull: false,
       unique: true
     },
     passwordHash: {
-      type: sequelize.Sequelize.DataTypes.STRING,
+      type: DataTypes.STRING,
       allowNull: false
     },
     role: {
-      type: sequelize.Sequelize.DataTypes.ENUM('Teacher', 'Principal', 'President', 'Accountant','Secretary'),
+      type: DataTypes.ENUM('Teacher', 'Principal', 'President', 'Accountant', 'Secretary'),
       allowNull: false
     },
     name: {
-      type: sequelize.Sequelize.DataTypes.STRING,
+      type: DataTypes.STRING,
       allowNull: true
     }
   }, {
     timestamps: true
   });
-
-  return User;
 };

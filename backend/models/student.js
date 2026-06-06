@@ -1,6 +1,4 @@
-const { DataTypes } = require('sequelize');
-
-module.exports = (sequelize) => {
+module.exports = (sequelize, DataTypes) => {
   return sequelize.define('Student', {
     admissionNo:        { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
     studentId:          { type: DataTypes.STRING, unique: true, allowNull: false },
@@ -36,8 +34,8 @@ module.exports = (sequelize) => {
     section:            { type: DataTypes.STRING, allowNull: false },
     rem:                { type: DataTypes.TEXT, allowNull: true },
     jDate:              { type: DataTypes.DATEONLY, allowNull: true }
-  }, { 
+  }, {
     tableName: 'students',
-    underscored: false  // keeps camelCase column names as-is
+    underscored: false
   });
 };
