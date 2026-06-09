@@ -38,7 +38,7 @@ function buildSidebar(role) {
         Accountant: ['Fees Management', 'Student Records'],
         Principal:  ['Statistics', 'Student Records', 'Marks Management', 'Fees Collection', 'Attendance'],
         President:  ['User Management', 'Statistics'],
-        Secretary:  ['User Management','Statistics', 'Student Records', 'Marks Management', 'Fees Collection', 'Attendance'],
+        Secretary:  ['Statistics', 'Student Records', 'Marks Management', 'Fees Collection', 'Attendance'],
     };
     const sidebar = document.getElementById('sidebarNav');
     sidebar.innerHTML = '';
@@ -122,6 +122,8 @@ function updateStudentTable(list) {
                     <button class="action-btn delete" onclick="deleteStudent('${s.studentId}')">Delete</button>
                     <button class="action-btn" style="background:#7c3aed;color:#fff;"
                         onclick="openRemarks('${s.studentId}','${s.admissionNo}','${s.name}')">Remarks</button>
+                   <button class="action-btn" style="background:#0369a1;color:#fff;" 
+        onclick="setStudentPassword('${s.admissionNo}', '${s.name}')">🔑 Set Password</button>
                 </td>
             </tr>`).join('')}
         </tbody>
@@ -296,14 +298,6 @@ function normaliseStudent(raw) {
  
     return s;
 }
- 
-// ── call normaliseStudent right after the API returns the list ────────
-// In loadDashboardData(), change:
-//   students = await apiRequest('/students') || [];
-// to:
-//   students = (await apiRequest('/students') || []).map(normaliseStudent);
-// ─────────────────────────────────────────────────────────────────────
- 
 function profileRow(label, value) {
     const display = (value !== undefined && value !== null && String(value).trim() !== '')
         ? value : '-';
@@ -581,6 +575,7 @@ function editStudent(admissionNo) {
         } catch (err) { alert(err.message); }
     };
 }
+ 
 // 9. STATISTICS
 function renderStatistics() {
     contentArea.innerHTML = `
@@ -644,8 +639,11 @@ function filterStatStudents() {
                             <button class="action-btn view"
                                 onclick="generateStudentReport('${s.admissionNo}')">View Report</button>
                             <button class="action-btn" style="background:#7c3aed;color:#fff;"
-                                onclick="openRemarks('${s.studentId}','${s.admissionNo}','${s.name}')">Remarks</button>
-                            <button class="action-btn" style="background:#ef4444;color:#fff;"
+                                onclick="openRemarks('\${s.studentId}','\${s.admissionNo}','\${s.name}')">Remarks</button>
+                    <button class="action-btn" style="background:#0369a1;color:#fff;" onclick="setStudentPassword('\${s.admissionNo}','\${s.name}')">?? Set Password</button>
+                                <button class="action-btn" style="background:#0369a1;color:#fff;" onclick="setStudentPassword('${s.admissionNo}','${s.name}')">🔑 Set Password</button>
+                          
+                               <button class="action-btn" style="background:#ef4444;color:#fff;"
                                 onclick="deleteStudentStat('${s.admissionNo}','${s.name}')">Delete</button>
                         </td>
                     </tr>`).join('')}
@@ -1076,4 +1074,56 @@ async function deleteRemark(id, studentId, admissionNo, studentName) {
     } catch(err) { alert('Failed to delete: ' + err.message); }
 }
 
+
+async function setStudentPassword(admissionNo, studentName) {
+    const newPassword = prompt(`Set password for ${studentName}:\n(minimum 6 characters)`);
+    
+    if (!newPassword) return;
+    if (newPassword.length < 6) {
+      alert('Password must be at least 6 characters!');
+      return;
+    }
+  
+    try {
+      const res = await fetch('/api/auth/set-student-password', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${localStorage.getItem('authToken')}`
+        },
+        body: JSON.stringify({ admissionNo, newPassword })
+      });
+  
+      const data = await res.json();
+      if (res.ok) {
+        alert(`✅ Password set successfully for ${studentName}`);
+      } else {
+        alert(`❌ Error: ${data.message}`);
+      }
+    } catch (err) {
+      alert('Server error. Try again.');
+    }
+  }
+
+
+  // Function for the 'Set Password' button in Staff Dashboard
+async function setStudentPassword(admissionNo, name) {
+    const newPassword = prompt(`Set password for ${name}:\n(minimum 6 characters)`);
+    
+    if (!newPassword) return;
+    if (newPassword.length < 6) return alert("Password too short!");
+
+    try {
+        const response = await apiRequest('/auth/set-student-password', {
+            method: 'POST',
+            body: JSON.stringify({ 
+                admissionNo: parseInt(admissionNo), 
+                newPassword: newPassword 
+            })
+        });
+        alert(response.message || "Password updated successfully!");
+    } catch (err) {
+        alert("Failed to set password: " + err.message);
+    }
+}
 init();
