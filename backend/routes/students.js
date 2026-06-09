@@ -117,4 +117,7 @@ router.delete('/:studentId', async (req, res) => {
   }
 });
 
+const studentController = require('../controllers/student');
+router.post('/update-password', studentController.updatePassword);
+
 module.exports = router;

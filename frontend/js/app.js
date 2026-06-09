@@ -639,18 +639,16 @@ function filterStatStudents() {
                             <button class="action-btn view"
                                 onclick="generateStudentReport('${s.admissionNo}')">View Report</button>
                             <button class="action-btn" style="background:#7c3aed;color:#fff;"
-                                onclick="openRemarks('\${s.studentId}','\${s.admissionNo}','\${s.name}')">Remarks</button>
-                    <button class="action-btn" style="background:#0369a1;color:#fff;" onclick="setStudentPassword('\${s.admissionNo}','\${s.name}')">?? Set Password</button>
-                                <button class="action-btn" style="background:#0369a1;color:#fff;" onclick="setStudentPassword('${s.admissionNo}','${s.name}')">🔑 Set Password</button>
-                          
-                               <button class="action-btn" style="background:#ef4444;color:#fff;"
+                                onclick="openRemarks('${s.studentId}','${s.admissionNo}','${s.name}')">Remarks</button>
+                            <button class="action-btn" style="background:#0369a1;color:#fff;" 
+                                onclick="setStudentPassword('${s.admissionNo}','${s.name}')">🔑 Set Password</button>
+                            <button class="action-btn" style="background:#ef4444;color:#fff;"
                                 onclick="deleteStudentStat('${s.admissionNo}','${s.name}')">Delete</button>
                         </td>
                     </tr>`).join('')}
             </tbody>
         </table>`;
 }
-
 async function deleteStudentStat(admissionNo, name) {
     if (!confirm(`Delete student "${name}" (Adm No: ${admissionNo})?\nThis cannot be undone.`)) return;
     try {
@@ -1125,5 +1123,14 @@ async function setStudentPassword(admissionNo, name) {
     } catch (err) {
         alert("Failed to set password: " + err.message);
     }
+}
+
+async function changeStudentPassword(admissionNo, password) {
+    const response = await fetch('https://railway-school-project-1.onrender.com/api/students/update-password', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ admissionNo, newPassword: password })
+    });
+    return response.json();
 }
 init();

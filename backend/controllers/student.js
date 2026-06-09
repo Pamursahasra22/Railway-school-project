@@ -1,21 +1,21 @@
-const db = require('../models');
+const bcrypt = require('bcrypt');
+const { Student } = require('../models');
 
-exports.create = async (req, res) => {
+exports.updatePassword = async (req, res) => {
     try {
-        console.log("Saving Student Data:", req.body);
+        const { admissionNo, newPassword } = req.body;
         
-        // Create student with the data provided
-        const student = await db.Student.create(req.body);
+        // 1. Hash the password
+        const hashedPassword = await bcrypt.hash(newPassword, 10);
         
-        res.status(201).json({
-            message: "Student Registered Successfully",
-            data: student
-        });
+        // 2. Update the database
+        await Student.update(
+            { password: hashedPassword },
+            { where: { admissionNo: admissionNo } }
+        );
+        
+        res.status(200).json({ message: "Password updated successfully!" });
     } catch (error) {
-        console.error("DETAILED DATABASE ERROR:", error);
-        res.status(400).json({ 
-            message: "Could not save student. Check if Student ID is unique.",
-            error: error.message 
-        });
+        res.status(500).json({ message: "Error updating password", error });
     }
 };
