@@ -1,5 +1,6 @@
 // js/api.js
-const API_BASE = '/api'; // Full URL
+// js/api.js
+const API_BASE = '/api'; // Relative URL
 
 async function apiRequest(path, options = {}) {
     const token = localStorage.getItem('authToken');
