@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Student Portal — Jack & Jill EM High School</title>
+    <title>Student Portal — Jack & Jill E.M High School</title>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
     <style>
         *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -12,6 +12,7 @@
             --navy: #0a1628;
             --gold: #c8a84b;
             --white: #ffffff;
+            --header-navy: #0d1b3e;
         }
 
         body {
@@ -19,28 +20,26 @@
             min-height: 100vh;
             display: flex;
             flex-direction: column;
-            /* 🔥 REMOVED BLUE GLARE: Using pure black overlay 🔥 */
             background: 
                 linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.85)),
                 url("student.jpeg") center/cover no-repeat fixed;
+            overflow-x: hidden; /* Prevent horizontal scroll */
         }
 
-        /* ── THE BRANDED HEADER (Matching your image) ── */
+        /* ── FULL WIDTH BRANDED HEADER ── */
         header {
-            background: #0d1b3e; /* Deep Navy */
+            background: var(--header-navy);
             position: relative;
             overflow: hidden;
             text-align: center;
-            padding: 50px 20px 40px;
-            width: 95%;
-            max-width: 1200px;
-            margin: 30px auto 0;
-            border-radius: 12px;
-            border: 1px solid rgba(200, 168, 75, 0.3);
-            box-shadow: 0 20px 50px rgba(0,0,0,0.6);
+            padding: 60px 20px 50px;
+            width: 100%; /* Fill left to right */
+            margin: 0;   /* Remove top and side gaps */
+            border-bottom: 3px solid var(--gold); /* Thick gold line at bottom */
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
         }
 
-        /* Diamond Grid Pattern */
+        /* Diamond Grid Pattern across full width */
         header::before {
             content:''; position:absolute; inset:0;
             background-image: 
@@ -49,78 +48,92 @@
                 linear-gradient(45deg, transparent 75%, rgba(255,255,255,0.03) 75%), 
                 linear-gradient(-45deg, transparent 75%, rgba(255,255,255,0.03) 75%);
             background-size: 40px 40px;
-            background-position: 0 0, 0 20px, 20px 20px, 20px 0;
+            z-index: 0;
         }
 
         .logo {
-            position: absolute; top: 35px; width: 110px; height: 110px;
-            border-radius: 50%; border: 3px solid var(--gold); background: white; object-fit: contain; padding: 5px;
-            z-index: 10; box-shadow: 0 10px 20px rgba(0,0,0,0.4);
+            position: absolute; 
+            top: 50%; 
+            transform: translateY(-50%);
+            width: clamp(80px, 10vw, 120px); 
+            height: clamp(80px, 10vw, 120px);
+            border-radius: 50%; 
+            border: 3px solid var(--gold); 
+            background: white; 
+            object-fit: contain; 
+            padding: 8px;
+            z-index: 10; 
+            box-shadow: 0 10px 20px rgba(0,0,0,0.4);
         }
-        .logo-left  { left: 40px; }
-        .logo-right { right: 40px; }
+        .logo-left  { left: 5%; }
+        .logo-right { right: 5%; }
 
-        .header-content { position: relative; z-index: 1; }
+        .header-content { position: relative; z-index: 1; max-width: 800px; margin: 0 auto; }
         
         .header-content h1 { 
             font-family: 'Playfair Display', serif; 
             color: var(--white); 
-            font-size: clamp(24px, 5vw, 48px); 
+            font-size: clamp(22px, 4vw, 42px); 
             letter-spacing: 2px;
-            margin-bottom: 10px;
+            margin-bottom: 12px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
         }
 
         .tagline { 
-            color: #d1d5db; 
-            font-size: 11px; 
+            color: #e5e7eb; 
+            font-size: clamp(9px, 1.2vw, 12px); 
             text-transform: uppercase; 
-            letter-spacing: 4px; 
+            letter-spacing: 3px; 
             font-weight: 600; 
             line-height: 1.8;
         }
 
         .divider { 
-            width: 60px; height: 2px; background: var(--gold); margin: 25px auto; 
+            width: 80px; height: 3px; background: var(--gold); margin: 30px auto; 
         }
 
         /* STATISTICS BAR */
         .stats { 
-            display: flex; justify-content: center; gap: clamp(20px, 6vw, 80px); 
-            margin-top: 15px; 
+            display: flex; justify-content: center; gap: clamp(20px, 5vw, 60px); 
+            margin-top: 20px; 
         }
-        .stat-val { font-family: 'Playfair Display', serif; font-size: 24px; color: var(--gold); font-weight: 700; }
-        .stat-lbl { font-size: 9px; color: rgba(255,255,255,0.4); text-transform: uppercase; letter-spacing: 1.5px; margin-top: 4px; font-weight: 700; }
+        .stat-val { font-family: 'Playfair Display', serif; font-size: clamp(18px, 2.5vw, 28px); color: var(--gold); font-weight: 700; }
+        .stat-lbl { font-size: 10px; color: rgba(255,255,255,0.5); text-transform: uppercase; letter-spacing: 1.5px; margin-top: 5px; font-weight: 700; }
 
-        /* ── COMPACT LOGIN BOX ── */
-        main { flex: 1; display: flex; align-items: center; justify-content: center; padding: 50px 20px; }
+        /* ── LOGIN BOX SECTION ── */
+        main { flex: 1; display: flex; align-items: center; justify-content: center; padding: 40px 20px; }
 
         .login-card {
-            background: var(--white); width: 100%; max-width: 350px; /* Smaller width */
-            border-radius: 16px; padding: 40px 30px;
-            box-shadow: 0 40px 100px rgba(0, 0, 0, 0.7);
+            background: var(--white); width: 100%; max-width: 380px;
+            border-radius: 16px; padding: 45px 35px;
+            box-shadow: 0 40px 100px rgba(0, 0, 0, 0.8);
             position: relative;
         }
-        .login-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 5px; background: var(--gold); border-radius: 16px 16px 0 0; }
+        .login-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 6px; background: var(--gold); border-radius: 16px 16px 0 0; }
 
-        .badge { display: inline-flex; align-items: center; gap: 6px; background: #f1f5f9; color: var(--navy); padding: 5px 12px; border-radius: 30px; font-size: 10px; font-weight: 700; margin-bottom: 20px; text-transform: uppercase; }
+        .badge { display: inline-flex; align-items: center; gap: 6px; background: #f1f5f9; color: var(--navy); padding: 6px 14px; border-radius: 30px; font-size: 11px; font-weight: 700; margin-bottom: 25px; text-transform: uppercase; }
         
-        .field { margin-bottom: 18px; }
-        .field label { display: block; font-size: 10px; font-weight: 700; color: var(--navy); text-transform: uppercase; margin-bottom: 6px; }
-        .input-wrap input { width: 100%; padding: 13px 15px; border: 1.5px solid #e2e8f0; border-radius: 10px; font-size: 14px; background: #fcfdfe; outline: none; transition: 0.2s; }
+        .field { margin-bottom: 20px; }
+        .field label { display: block; font-size: 11px; font-weight: 700; color: var(--navy); text-transform: uppercase; margin-bottom: 8px; }
+        .input-wrap input { width: 100%; padding: 14px 16px; border: 1.5px solid #e2e8f0; border-radius: 12px; font-size: 15px; background: #fcfdfe; outline: none; transition: 0.2s; }
         .input-wrap input:focus { border-color: var(--gold); box-shadow: 0 0 0 4px rgba(200, 168, 75, 0.1); }
 
-        .btn-main { width: 100%; padding: 15px; background: var(--navy); color: var(--gold); border: none; border-radius: 10px; font-size: 14px; font-weight: 700; cursor: pointer; text-transform: uppercase; margin-top: 10px; }
-        .btn-main:hover { background: #1a2a4d; transform: translateY(-1px); }
+        .btn-main { width: 100%; padding: 16px; background: var(--navy); color: var(--gold); border: none; border-radius: 12px; font-size: 15px; font-weight: 700; cursor: pointer; text-transform: uppercase; margin-top: 10px; transition: 0.3s; }
+        .btn-main:hover { background: #152744; transform: translateY(-2px); box-shadow: 0 5px 15px rgba(0,0,0,0.2); }
 
-        .footer-link { text-align: center; margin-top: 25px; font-size: 12px; }
+        .footer-link { text-align: center; margin-top: 30px; font-size: 13px; color: #64748b; }
         .footer-link a { color: var(--navy); font-weight: 700; text-decoration: none; border-bottom: 2px solid var(--gold); }
 
-        footer { text-align: center; padding: 25px; color: rgba(255,255,255,0.4); font-size: 10px; margin-top: auto; }
+        footer { text-align: center; padding: 30px; color: rgba(255,255,255,0.5); font-size: 11px; }
 
-        @media (max-width: 900px) { 
-            .logo { display: none; } 
-            .stats { display: none; }
-            header { padding: 30px 15px; margin-top: 15px; }
+        @media (max-width: 1024px) {
+            .logo { width: 90px; height: 90px; }
+        }
+
+        @media (max-width: 768px) { 
+            .logo { display: none; } /* Hide logos on mobile to prevent overlap */
+            .stats { flex-wrap: wrap; gap: 20px; }
+            header { padding: 40px 20px; }
         }
     </style>
 </head>
@@ -131,7 +144,7 @@
         <img src="wwo.jpeg" class="logo logo-right" alt="School Logo">
         
         <div class="header-content">
-            <h1>JACK & JILL EM HIGH SCHOOL</h1>
+            <h1>JACK & JILL E.M HIGH SCHOOL</h1>
             <div class="tagline">
                 SOUTH COAST RAILWAY<br>
                 WOMENS WELFARE ORGANIZATION [REGD]<br>
@@ -144,7 +157,7 @@
                 <div class="stat-item"><div class="stat-val">75000+</div><div class="stat-lbl">Students</div></div>
                 <div class="stat-item"><div class="stat-val">100+</div><div class="stat-lbl">Staff</div></div>
                 <div class="stat-item"><div class="stat-val">50+</div><div class="stat-lbl">Years</div></div>
-                <div class="stat-item"><div class="stat-val">1–10</div><div class="stat-lbl">Grades</div></div>
+                <div class="stat-item"><div class="stat-val">Grade 1–10</div><div class="stat-lbl">All Levels</div></div>
             </div>
         </div>
     </header>
@@ -152,10 +165,10 @@
     <main>
         <div class="login-card">
             <div class="badge">🎓 Student Portal</div>
-            <h2 style="font-family: 'Playfair Display', serif; font-size: 26px; color: var(--navy); margin-bottom: 8px;">Welcome</h2>
-            <p style="font-size: 13px; color: #64748b; margin-bottom: 25px;">Enter credentials to view your reports.</p>
+            <h2 style="font-family: 'Playfair Display', serif; font-size: 28px; color: var(--navy); margin-bottom: 10px;">Welcome</h2>
+            <p style="font-size: 14px; color: #64748b; margin-bottom: 30px;">Enter credentials to view your reports.</p>
 
-            <div id="errorMsg" style="display:none; color:red; font-size:12px; margin-bottom:15px; text-align:center;"></div>
+            <div id="errorMsg" style="display:none; color: #ef4444; font-size:13px; margin-bottom:20px; text-align:center; padding: 10px; background: #fef2f2; border-radius: 8px;"></div>
 
             <div class="field">
                 <label>Admission No.</label>
@@ -186,7 +199,11 @@
             const err = document.getElementById('errorMsg');
             err.style.display = 'none';
 
-            if (!adm || !pwd) { err.innerText = 'Fill all fields'; err.style.display = 'block'; return; }
+            if (!adm || !pwd) { 
+                err.innerText = 'Please fill in all fields'; 
+                err.style.display = 'block'; 
+                return; 
+            }
 
             try {
                 const res = await fetch(`${API}/api/auth/student-login`, {
@@ -200,11 +217,11 @@
                     localStorage.setItem('studentInfo', JSON.stringify(data.student));
                     window.location.href = 'dashboard.html';
                 } else {
-                    err.innerText = data.message || 'Login failed';
+                    err.innerText = data.message || 'Invalid credentials';
                     err.style.display = 'block';
                 }
             } catch (e) {
-                err.innerText = 'Connecting... try again';
+                err.innerText = 'Server busy. Please try again in a moment.';
                 err.style.display = 'block';
             }
         }
