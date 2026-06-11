@@ -28,7 +28,6 @@
             z-index: 10;
             background: white;
         }
-
         .hero-logo-left  { left: 50px; }
         .hero-logo-right { right: 50px; }
 
@@ -37,7 +36,6 @@
             .hero-logo-left  { left: 20px; }
             .hero-logo-right { right: 20px; }
         }
-
         @media (max-width: 600px) {
             .hero-logo { top: 15px; width: 60px; height: 60px; border-width: 2px; }
             .hero-logo-left   { left: 15px; }
@@ -158,13 +156,136 @@
         .link-btn { background: none; border: none; padding: 0; font-family: inherit; font-size: 13px; color: var(--blue); cursor: pointer; text-decoration: underline; }
         .page-footer { background:var(--navy); text-align:center; padding:18px; font-size:12px; color:rgba(255,255,255,.35); }
 
+        /* ── APPROVAL MODAL ── */
+        .modal-overlay {
+            display: none;
+            position: fixed; inset: 0;
+            background: rgba(15,31,75,0.55);
+            backdrop-filter: blur(4px);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        .modal-overlay.open { display: flex; }
+        .modal {
+            background: var(--white);
+            border-radius: 16px;
+            width: 100%; max-width: 620px;
+            max-height: 80vh;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 24px 60px rgba(0,0,0,0.25);
+            animation: slideUp .25s ease;
+        }
+        @keyframes slideUp { from { transform: translateY(20px); opacity:0; } to { transform: translateY(0); opacity:1; } }
+        .modal-header {
+            background: var(--navy);
+            padding: 20px 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .modal-header h3 {
+            font-family: 'Playfair Display', serif;
+            font-size: 18px;
+            color: var(--white);
+        }
+        .modal-header span { font-size: 12px; color: rgba(255,255,255,.5); margin-left: 10px; }
+        .modal-close {
+            background: rgba(255,255,255,.15);
+            border: none; color: white;
+            width: 32px; height: 32px;
+            border-radius: 50%;
+            font-size: 18px; cursor: pointer;
+            display: flex; align-items: center; justify-content: center;
+            transition: background .2s;
+        }
+        .modal-close:hover { background: rgba(255,255,255,.3); }
+        .modal-body { padding: 24px; overflow-y: auto; flex: 1; }
+        .modal-msg { font-size:13px; padding:11px 14px; border-radius:8px; margin-bottom:16px; display:none; }
+        .modal-msg.show { display:block; }
+        .modal-msg.error { background:#fef2f2; border:1px solid #fecaca; color:var(--red); }
+        .modal-msg.success { background:#f0fdf4; border:1px solid #bbf7d0; color:var(--green); }
+        .approval-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+        .approval-table th {
+            text-align: left;
+            font-size: 10px; font-weight: 700;
+            letter-spacing: .8px; text-transform: uppercase;
+            color: var(--muted);
+            padding: 0 12px 10px;
+            border-bottom: 1.5px solid var(--border);
+        }
+        .approval-table td {
+            padding: 12px;
+            border-bottom: 1px solid var(--border);
+            vertical-align: middle;
+        }
+        .approval-table tr:last-child td { border-bottom: none; }
+        .approval-table tr:hover td { background: #f8fafc; }
+        .user-name { font-weight: 600; color: var(--text); }
+        .user-email { font-size: 12px; color: var(--muted); margin-top: 2px; }
+        .role-badge {
+            display: inline-block;
+            padding: 3px 8px;
+            border-radius: 20px;
+            font-size: 11px; font-weight: 600;
+            background: #eef2ff; color: var(--blue);
+        }
+        .action-btns { display: flex; gap: 8px; }
+        .btn-approve {
+            padding: 6px 14px;
+            background: var(--green); color: white;
+            border: none; border-radius: 6px;
+            font-size: 12px; font-weight: 700;
+            cursor: pointer; font-family: inherit;
+            transition: opacity .2s;
+        }
+        .btn-approve:hover { opacity: .85; }
+        .btn-reject {
+            padding: 6px 14px;
+            background: var(--red); color: white;
+            border: none; border-radius: 6px;
+            font-size: 12px; font-weight: 700;
+            cursor: pointer; font-family: inherit;
+            transition: opacity .2s;
+        }
+        .btn-reject:hover { opacity: .85; }
+        .btn-approve:disabled, .btn-reject:disabled { opacity: .5; cursor: not-allowed; }
+        .empty-state { text-align: center; padding: 40px 20px; color: var(--muted); font-size: 14px; }
+        .empty-state .empty-icon { font-size: 36px; margin-bottom: 10px; }
+        .loading-state { text-align: center; padding: 40px 20px; color: var(--muted); font-size: 14px; }
+
         @media(max-width:860px) {
             .body-grid { grid-template-columns:1fr; }
             .right-col { border-left:none; border-top:1px solid var(--border); }
         }
+        @media(max-width:500px) {
+            .approval-table th:nth-child(2), .approval-table td:nth-child(2) { display:none; }
+        }
     </style>
 </head>
 <body>
+
+<!-- ── PRINCIPAL APPROVAL MODAL ── -->
+<div class="modal-overlay" id="approvalModal">
+    <div class="modal">
+        <div class="modal-header">
+            <div style="display:flex;align-items:center;gap:10px;">
+                <h3>Pending Staff Approvals</h3>
+                <span id="pendingCount"></span>
+            </div>
+            <button class="modal-close" onclick="closeApprovalModal()">✕</button>
+        </div>
+        <div class="modal-body">
+            <div class="modal-msg" id="modal-msg"></div>
+            <div id="approvalContent">
+                <div class="loading-state">Loading pending users…</div>
+            </div>
+        </div>
+    </div>
+</div>
 
 <div class="hero">
     <img src="indian.jpeg" class="hero-logo hero-logo-left" alt="Indian Railways Logo">
@@ -216,6 +337,7 @@
             <button class="tab-btn"        id="tab-forgot" onclick="showTab('forgot')">Forgot Password</button>
         </div>
 
+        <!-- SIGN IN -->
         <div class="panel active" id="panel-login">
             <h2 class="panel-title">Staff Portal</h2>
             <p class="panel-sub">Sign in to access the administrative dashboard.</p>
@@ -226,6 +348,7 @@
             <button class="btn-main" id="login-btn" onclick="doLogin()">Sign In</button>
         </div>
 
+        <!-- SIGN UP -->
         <div class="panel" id="panel-signup">
             <h2 class="panel-title">Create Account</h2>
             <p class="panel-sub">Register a new staff account.</p>
@@ -239,6 +362,7 @@
             <button class="btn-main" id="signup-btn" onclick="doSignup()">Create Account</button>
         </div>
 
+        <!-- FORGOT PASSWORD -->
         <div class="panel" id="panel-forgot">
             <h2 class="panel-title">Reset Password</h2>
             <p class="panel-sub">Enter registered email and role.</p>
@@ -257,23 +381,30 @@
 
 <script>
     const API = '/api/auth';
+    const PRINCIPAL_API = 'https://railway-school-project-1.onrender.com/api/principal';
+
+    // ── SLIDESHOW ──
     let current = 0;
     function goSlide(n) { current = n; document.getElementById('slides').style.transform = 'translateX(-' + (current * 100) + '%)'; document.querySelectorAll('.dot').forEach((d, i) => d.classList.toggle('active', i === current)); }
     function nextSlide() { goSlide((current + 1) % 3); }
     function prevSlide() { goSlide((current - 1 + 3) % 3); }
     setInterval(nextSlide, 5000);
 
+    // ── TABS ──
     function showTab(name) {
-        ['login','signup','forgot'].forEach(t => { document.getElementById('tab-' + t).classList.toggle('active', t === name); document.getElementById('panel-' + t).classList.toggle('active', t === name); });
+        ['login','signup','forgot'].forEach(t => {
+            document.getElementById('tab-' + t).classList.toggle('active', t === name);
+            document.getElementById('panel-' + t).classList.toggle('active', t === name);
+        });
         document.querySelectorAll('.msg').forEach(el => { el.classList.remove('show'); el.textContent = ''; });
     }
 
     function togglePwd(id, btn) { const inp = document.getElementById(id); inp.type = inp.type === 'password' ? 'text' : 'password'; btn.textContent = inp.type === 'password' ? '👁' : '🙈'; }
-
     function showMsg(id, text, type) { const el = document.getElementById(id); el.textContent = text; el.className = 'msg ' + type + ' show'; }
     function clearMsg(id) { const el = document.getElementById(id); el.classList.remove('show'); el.textContent = ''; }
     function setBtn(id, text, disabled) { const b = document.getElementById(id); b.textContent = text; b.disabled = disabled; }
 
+    // ── LOGIN ──
     async function doLogin() {
         const email = document.getElementById('login-email').value.trim();
         const password = document.getElementById('login-pwd').value;
@@ -285,37 +416,35 @@
             const res = await fetch(API + '/login', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email, password, role }) });
             const data = await res.json();
             if (!res.ok) { showMsg('login-err', data.message || 'Invalid credentials.', 'error'); setBtn('login-btn', 'Sign In', false); return; }
-            localStorage.setItem('authToken', data.token); localStorage.setItem('userRole', data.user.role); localStorage.setItem('userName', data.user.name || data.user.email);
+            localStorage.setItem('authToken', data.token);
+            localStorage.setItem('userRole', data.user.role);
+            localStorage.setItem('userName', data.user.name || data.user.email);
+
+            // If Principal, open approval modal before redirecting
+            if (data.user.role === 'Principal') {
+                openApprovalModal(data.token);
+                setBtn('login-btn', 'Sign In', false);
+                return;
+            }
+
             window.location.href = data.user.role === 'Accountant' ? 'fees.html' : 'dashboard.html';
         } catch(err) { showMsg('login-err', 'Connection error.', 'error'); setBtn('login-btn', 'Sign In', false); }
     }
 
+    // ── SIGNUP ──
     async function doSignup() {
         const name     = document.getElementById('signup-name').value.trim();
         const email    = document.getElementById('signup-email').value.trim();
         const role     = document.getElementById('signup-role').value;
         const password = document.getElementById('signup-pwd').value;
         const confirm  = document.getElementById('signup-pwd2').value;
-
         clearMsg('signup-err'); clearMsg('signup-ok');
-
-        if (!name || !email || !role || !password) {
-            showMsg('signup-err', 'Please fill in all fields.', 'error'); return;
-        }
-        if (password !== confirm) {
-            showMsg('signup-err', 'Passwords do not match.', 'error'); return;
-        }
-
+        if (!name || !email || !role || !password) { showMsg('signup-err', 'Please fill in all fields.', 'error'); return; }
+        if (password !== confirm) { showMsg('signup-err', 'Passwords do not match.', 'error'); return; }
         setBtn('signup-btn', 'Creating Account...', true);
-
         try {
-            const res = await fetch(API + '/register', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ name, email, role, password })
-            });
+            const res = await fetch(API + '/register', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ name, email, role, password }) });
             const data = await res.json();
-
             if (res.ok) {
                 showMsg('signup-ok', 'Account created! Switching to Sign In...', 'success');
                 setTimeout(() => showTab('login'), 2000);
@@ -329,6 +458,7 @@
         }
     }
 
+    // ── FORGOT PASSWORD ──
     async function doForgot() {
         const email = document.getElementById('forgot-email').value.trim();
         const role = document.getElementById('forgot-role').value;
@@ -346,6 +476,126 @@
         } catch(err) { showMsg('forgot-err', 'Connection error.', 'error'); setBtn('forgot-btn', 'Reset Password', false); }
     }
 
+    // ── APPROVAL MODAL ──
+    let _approvalToken = null;
+
+    function openApprovalModal(token) {
+        _approvalToken = token || localStorage.getItem('authToken');
+        document.getElementById('approvalModal').classList.add('open');
+        loadPendingUsers();
+    }
+
+    function closeApprovalModal() {
+        document.getElementById('approvalModal').classList.remove('open');
+        // Redirect to dashboard after closing
+        window.location.href = 'dashboard.html';
+    }
+
+    async function loadPendingUsers() {
+        const content = document.getElementById('approvalContent');
+        const countEl = document.getElementById('pendingCount');
+        content.innerHTML = '<div class="loading-state">Loading pending users…</div>';
+
+        try {
+            const headers = { 'Content-Type': 'application/json' };
+            if (_approvalToken) headers['Authorization'] = 'Bearer ' + _approvalToken;
+
+            const res = await fetch(PRINCIPAL_API + '/pending-users', { headers });
+            if (!res.ok) throw new Error('Failed to fetch');
+            const users = await res.json();
+
+            countEl.textContent = users.length > 0 ? users.length + ' pending' : '';
+
+            if (users.length === 0) {
+                content.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-icon">✅</div>
+                        <div>No pending approvals at this time.</div>
+                    </div>`;
+                return;
+            }
+
+            content.innerHTML = `
+                <table class="approval-table">
+                    <thead>
+                        <tr>
+                            <th>Staff Member</th>
+                            <th>Role</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${users.map(u => `
+                            <tr id="row-${u.id}">
+                                <td>
+                                    <div class="user-name">${u.name || '—'}</div>
+                                    <div class="user-email">${u.email}</div>
+                                </td>
+                                <td><span class="role-badge">${u.role}</span></td>
+                                <td>
+                                    <div class="action-btns">
+                                        <button class="btn-approve" id="approve-${u.id}" onclick="decide('${u.id}','approved')">Approve</button>
+                                        <button class="btn-reject"  id="reject-${u.id}"  onclick="decide('${u.id}','rejected')">Reject</button>
+                                    </div>
+                                </td>
+                            </tr>`).join('')}
+                    </tbody>
+                </table>`;
+        } catch (err) {
+            content.innerHTML = `<div class="empty-state"><div class="empty-icon">⚠️</div><div>Could not load pending users. Please try again.</div></div>`;
+        }
+    }
+
+    async function decide(userId, action) {
+        const approveBtn = document.getElementById('approve-' + userId);
+        const rejectBtn  = document.getElementById('reject-'  + userId);
+        if (approveBtn) { approveBtn.disabled = true; approveBtn.textContent = '…'; }
+        if (rejectBtn)  { rejectBtn.disabled  = true; }
+
+        const msgEl = document.getElementById('modal-msg');
+
+        try {
+            const headers = { 'Content-Type': 'application/json' };
+            if (_approvalToken) headers['Authorization'] = 'Bearer ' + _approvalToken;
+
+            const res = await fetch(PRINCIPAL_API + '/decide-user', {
+                method: 'POST',
+                headers,
+                body: JSON.stringify({ userId, action })
+            });
+            const data = await res.json();
+
+            if (res.ok) {
+                // Remove the row smoothly
+                const row = document.getElementById('row-' + userId);
+                if (row) { row.style.opacity = '0'; row.style.transition = 'opacity .3s'; setTimeout(() => row.remove(), 300); }
+
+                msgEl.textContent = action === 'approved' ? '✓ User approved successfully.' : '✓ User rejected.';
+                msgEl.className = 'modal-msg show ' + (action === 'approved' ? 'success' : 'error');
+                setTimeout(() => { msgEl.classList.remove('show'); }, 3000);
+
+                // Refresh count
+                setTimeout(loadPendingUsers, 400);
+            } else {
+                msgEl.textContent = data.message || 'Action failed.';
+                msgEl.className = 'modal-msg show error';
+                if (approveBtn) { approveBtn.disabled = false; approveBtn.textContent = 'Approve'; }
+                if (rejectBtn)  { rejectBtn.disabled  = false; }
+            }
+        } catch (err) {
+            msgEl.textContent = 'Connection error. Please try again.';
+            msgEl.className = 'modal-msg show error';
+            if (approveBtn) { approveBtn.disabled = false; approveBtn.textContent = 'Approve'; }
+            if (rejectBtn)  { rejectBtn.disabled  = false; }
+        }
+    }
+
+    // Close modal on overlay click
+    document.getElementById('approvalModal').addEventListener('click', function(e) {
+        if (e.target === this) closeApprovalModal();
+    });
+
+    // Keyboard enter handler
     document.addEventListener('keydown', e => {
         if (e.key !== 'Enter') return;
         const active = document.querySelector('.panel.active');
