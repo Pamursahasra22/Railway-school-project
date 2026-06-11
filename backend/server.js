@@ -12,9 +12,12 @@ const studentRoutes = require('./routes/students');
 const markRoutes = require('./routes/marks');
 const feeRoutes = require('./routes/fees');
 const attendanceRoutes = require('./routes/attendance');
-
 // 🔥 FIX: Matches the lowercase filename we just set
 const studentPortalRoutes = require('./routes/studentportal');
+
+
+const principalRoutes = require('./routes/principal');
+
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -40,6 +43,8 @@ app.use('/api/attendance', attendanceRoutes);
 
 // 🔥 API for Student Dashboard
 app.use('/api/student-portal', studentPortalRoutes);
+
+app.use('/api/principal', principalRoutes);
 
 // --- FRONTEND INTEGRATION ---
 app.use(express.static(path.join(__dirname, '..', 'frontend')));

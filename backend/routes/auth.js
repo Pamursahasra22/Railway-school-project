@@ -82,4 +82,21 @@ router.post('/set-student-password', async (req, res) => {
   } catch (err) { res.status(500).json({ message: err.message }); }
 });
 
+
+// Inside your login route/controller
+// ... after you find the user in the database ...
+
+if (user.status === 'pending') {
+    return res.status(403).json({ 
+        message: "Your account is pending Principal approval. Please wait for confirmation." 
+    });
+}
+
+if (user.status === 'rejected') {
+    return res.status(403).json({ 
+        message: "Your account registration has been rejected by the Principal." 
+    });
+}
+
+// ... only then proceed to generate the login token ...
 module.exports = router;

@@ -16,6 +16,12 @@ module.exports = (sequelize, DataTypes) => {
     name: {
       type: DataTypes.STRING,
       allowNull: true
+    },
+    // 🔥 Added Status field for Principal Approval
+    status: {
+      type: DataTypes.ENUM('pending', 'approved', 'rejected'),
+      allowNull: false,
+      defaultValue: 'pending'
     }
   }, {
     timestamps: true
