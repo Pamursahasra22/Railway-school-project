@@ -21,7 +21,7 @@ router.post('/register', async (req, res) => {
         email: email.toLowerCase(), 
         passwordHash, 
         role,
-        status: 'pending' 
+        status: 'pending'  // New signups always pending
     });
 
     res.status(201).json({ message: 'Registration successful! Please wait for Principal approval.' });
@@ -40,16 +40,18 @@ router.post('/login', async (req, res) => {
     const isValid = await bcrypt.compare(password, user.passwordHash);
     if (!isValid) return res.status(401).json({ message: 'Invalid email or password.' });
 
-    // 🔥 THE CODE GOES HERE (Inside the login function) 🔥
-    if (user.status === 'pending') {
-        return res.status(403).json({ 
-            message: "Your account is pending Principal approval." 
-        });
-    }
-    if (user.status === 'rejected') {
-        return res.status(403).json({ 
-            message: "Your account registration has been rejected." 
-        });
+    // ✅ Principal bypasses approval check — they ARE the approver
+    if (user.role !== 'Principal') {
+      if (user.status === 'pending') {
+          return res.status(403).json({ 
+              message: "Your account is pending Principal approval. Please wait for confirmation." 
+          });
+      }
+      if (user.status === 'rejected') {
+          return res.status(403).json({ 
+              message: "Your account registration has been rejected by the Principal." 
+          });
+      }
     }
 
     const token = jwt.sign(

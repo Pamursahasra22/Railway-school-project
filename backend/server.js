@@ -12,23 +12,17 @@ const studentRoutes = require('./routes/students');
 const markRoutes = require('./routes/marks');
 const feeRoutes = require('./routes/fees');
 const attendanceRoutes = require('./routes/attendance');
-// 🔥 FIX: Matches the lowercase filename we just set
 const studentPortalRoutes = require('./routes/studentportal');
-
-
 const principalRoutes = require('./routes/principal');
-
 
 const app = express();
 const PORT = process.env.PORT || 5000;
 
 // Middleware
-// Allow both local testing and your specific student portal link
 app.use(cors({
   origin: '*', 
   credentials: true
 }));
-
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -40,10 +34,7 @@ app.use('/api/students', studentRoutes);
 app.use('/api/marks', markRoutes);
 app.use('/api/fees', feeRoutes);
 app.use('/api/attendance', attendanceRoutes);
-
-// 🔥 API for Student Dashboard
 app.use('/api/student-portal', studentPortalRoutes);
-
 app.use('/api/principal', principalRoutes);
 
 // --- FRONTEND INTEGRATION ---
@@ -80,8 +71,14 @@ async function seedDefaultUsers() {
           email: user.email,
           passwordHash: bcrypt.hashSync(user.password, 10),
           role: user.role,
-          name: user.name
+          name: user.name,
+          status: 'approved'  // ✅ Seeded users are pre-approved
         });
+      } else {
+        // ✅ Also fix any existing seeded users that have no status
+        if (!existing.status || existing.status === 'pending') {
+          await existing.update({ status: 'approved' });
+        }
       }
     } catch (e) { console.log("User verified."); }
   }
@@ -91,8 +88,6 @@ async function startServer() {
   try {
     await db.sequelize.authenticate();
     console.log('Database connection established.');
-
-    // We skip sync for now to avoid the constraint error you had earlier
     console.log('Database sync skipped.');
 
     await seedDefaultUsers();
