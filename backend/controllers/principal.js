@@ -1,6 +1,6 @@
 
 
-const { user: User } = require('../models');
+const { User } = require('../models');
 
 // Fetch all users waiting for approval
 exports.getPendingUsers = async (req, res) => {
