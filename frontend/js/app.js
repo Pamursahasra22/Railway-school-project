@@ -36,7 +36,7 @@ function buildSidebar(role) {
     const menu = {
         Teacher:    ['Student Records', 'Marks Management', 'Attendance'],
         Accountant: ['Fees Management', 'Student Records'],
-        Principal:  ['Statistics', 'Student Records', 'Marks Management', 'Fees Collection', 'Attendance'],
+        Principal:  ['Statistics', 'Student Records', 'Marks Management', 'Fees Collection', 'Attendance','Staff Approvals'],
         President:  ['User Management', 'Statistics'],
         Secretary:  ['Statistics', 'Student Records', 'Marks Management', 'Fees Collection', 'Attendance'],
     };
@@ -69,6 +69,7 @@ function renderSection(name) {
     else if (name === 'Attendance')        window.location.href = 'attendance.html';
     else if (name === 'Statistics')        renderStatistics();
     else if (name === 'User Management')   renderUserManagement();
+    else if (name === 'Staff Approvals')   renderStaffApprovals();
     else contentArea.innerHTML = `<div class="card"><h3>${name}</h3><p>Module Loading...</p></div>`;
 }
 
@@ -1132,5 +1133,72 @@ async function changeStudentPassword(admissionNo, password) {
         body: JSON.stringify({ admissionNo, newPassword: password })
     });
     return response.json();
+}
+
+// 12. STAFF APPROVALS (Principal)
+async function renderStaffApprovals() {
+    contentArea.innerHTML = `
+        <div class="card">
+            <div class="card-title" style="font-weight:700;color:#233d91;font-size:15px;margin-bottom:16px;">
+                🧑‍💼 Pending Staff Approvals
+            </div>
+            <div id="approvalsList">
+                <p style="text-align:center;padding:20px;color:#888;">Loading...</p>
+            </div>
+        </div>`;
+
+    try {
+        const pending = await apiRequest('/principal/pending-users');
+        const wrapper = document.getElementById('approvalsList');
+
+        if (!pending || pending.length === 0) {
+            wrapper.innerHTML = `
+                <div style="text-align:center;padding:40px 16px;color:#888;">
+                    <div style="font-size:32px;margin-bottom:10px;">✅</div>
+                    No pending approvals at this time.
+                </div>`;
+            return;
+        }
+
+        wrapper.innerHTML = `<table>
+            <thead>
+                <tr><th>Name</th><th>Email</th><th>Role</th><th>Requested On</th><th>Action</th></tr>
+            </thead>
+            <tbody>
+                ${pending.map(u => `<tr id="approval-row-${u.id}">
+                    <td>${u.name}</td>
+                    <td>${u.email}</td>
+                    <td>${u.role}</td>
+                    <td>${new Date(u.createdAt).toLocaleDateString('en-IN')}</td>
+                    <td style="display:flex;gap:6px;flex-wrap:wrap;">
+                        <button class="action-btn" style="background:#22c55e;color:#fff;"
+                            onclick="decideUser(${u.id}, 'approved')">Approve</button>
+                        <button class="action-btn" style="background:#ef4444;color:#fff;"
+                            onclick="decideUser(${u.id}, 'rejected')">Reject</button>
+                    </td>
+                </tr>`).join('')}
+            </tbody>
+        </table>`;
+    } catch (err) {
+        document.getElementById('approvalsList').innerHTML =
+            `<p style="text-align:center;padding:20px;color:red;">Failed to load: ${err.message}</p>`;
+    }
+}
+
+async function decideUser(userId, action) {
+    if (!confirm(`Are you sure you want to ${action === 'approved' ? 'approve' : 'reject'} this staff member?`)) return;
+    try {
+        const res = await apiRequest('/principal/decide-user', {
+            method: 'POST',
+            body: JSON.stringify({ userId, action })
+        });
+        alert(res.message || `User ${action}.`);
+        const row = document.getElementById(`approval-row-${userId}`);
+        if (row) row.remove();
+        const tbody = document.querySelector('#approvalsList tbody');
+        if (tbody && tbody.children.length === 0) renderStaffApprovals();
+    } catch (err) {
+        alert('Failed: ' + err.message);
+    }
 }
 init();

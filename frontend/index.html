@@ -289,7 +289,7 @@
 
 <div class="hero">
     <img src="indian.jpeg" class="hero-logo hero-logo-left" alt="Indian Railways Logo">
-    <img src="wwo.jpeg" class="hero-logo hero-logo-right" alt="School Logo">
+    <img src="new.jpeg" class="hero-logo hero-logo-right" alt="School Logo">
     <div class="hero-bar"></div>
     <div class="hero-content">
         <h1>JACK & JILL EM HIGH SCHOOL</h1>
@@ -421,11 +421,7 @@
             localStorage.setItem('userName', data.user.name || data.user.email);
 
             // If Principal, open approval modal before redirecting
-            if (data.user.role === 'Principal') {
-                openApprovalModal(data.token);
-                setBtn('login-btn', 'Sign In', false);
-                return;
-            }
+            
 
             window.location.href = data.user.role === 'Accountant' ? 'fees.html' : 'dashboard.html';
         } catch(err) { showMsg('login-err', 'Connection error.', 'error'); setBtn('login-btn', 'Sign In', false); }
