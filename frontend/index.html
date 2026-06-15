@@ -421,11 +421,7 @@
             localStorage.setItem('userName', data.user.name || data.user.email);
 
             // If Principal, open approval modal before redirecting
-            if (data.user.role === 'Principal') {
-                openApprovalModal(data.token);
-                setBtn('login-btn', 'Sign In', false);
-                return;
-            }
+            
 
             window.location.href = data.user.role === 'Accountant' ? 'fees.html' : 'dashboard.html';
         } catch(err) { showMsg('login-err', 'Connection error.', 'error'); setBtn('login-btn', 'Sign In', false); }
