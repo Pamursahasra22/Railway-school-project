@@ -6,7 +6,6 @@
     <title>Student Portal — Jack & Jill EM High School</title>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
    <style>
-    /* 1. RESET EVERYTHING TO REMOVE GAPS */
     *, *::before, *::after { 
         box-sizing: border-box; 
         margin: 0; 
@@ -25,7 +24,7 @@
         height: 100%;
         margin: 0 !important;
         padding: 0 !important;
-        overflow-x: hidden; /* Prevents horizontal scrolling */
+        overflow-x: hidden;
     }
 
     body {
@@ -37,26 +36,21 @@
             url("student.jpeg") center/cover no-repeat fixed;
     }
 
-    /* ── FULL WIDTH HEADER (NO GAPS) ── */
+    /* ── HEADER ── */
     header {
         background: var(--header-navy);
         position: relative;
         overflow: hidden;
         text-align: center;
-        padding: 60px 20px 50px;
-        
-        /* THESE REMOVE THE GAPS */
+        padding: 50px 20px 40px;
         width: 100% !important; 
         margin: 0 !important; 
         border-radius: 0 !important; 
         left: 0 !important;
         top: 0 !important;
-
-        border-bottom: 3px solid var(--gold);
         box-shadow: 0 10px 30px rgba(0,0,0,0.5);
     }
 
-    /* Diamond Grid Pattern */
     header::before {
         content:''; position:absolute; inset:0;
         background-image: 
@@ -68,7 +62,6 @@
         z-index: 0;
     }
 
-    /* LOGOS - Placed inside the banner */
     .logo {
         position: absolute; 
         top: 50%; 
@@ -93,7 +86,7 @@
         color: var(--white); 
         font-size: clamp(20px, 4vw, 40px); 
         letter-spacing: 2px;
-        margin-bottom: 10px;
+        margin-bottom: 12px;
     }
 
     .tagline { 
@@ -105,18 +98,8 @@
         line-height: 1.7;
     }
 
-    .divider { 
-        width: 80px; height: 2px; background: var(--gold); margin: 25px auto; 
-    }
-
-    .stats { 
-        display: flex; justify-content: center; gap: clamp(15px, 5vw, 60px); 
-    }
-    .stat-val { font-family: 'Playfair Display', serif; font-size: clamp(16px, 2vw, 26px); color: var(--gold); font-weight: 700; }
-    .stat-lbl { font-size: 9px; color: rgba(255,255,255,0.5); text-transform: uppercase; letter-spacing: 1px; margin-top: 4px; font-weight: 700; }
-
     /* ── LOGIN CARD ── */
-    main { flex: 1; display: flex; align-items: center; justify-content: center; padding: 40px 20px; }
+    main { flex: 1; display: flex; align-items: center; justify-content: center; padding: 50px 20px; }
 
     .login-card {
         background: var(--white); width: 100%; max-width: 360px;
@@ -124,20 +107,68 @@
         box-shadow: 0 40px 100px rgba(0, 0, 0, 0.8);
         position: relative;
     }
-    .login-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 6px; background: var(--gold); border-radius: 16px 16px 0 0; }
 
-    .btn-main { width: 100%; padding: 16px; background: var(--navy); color: var(--gold); border: none; border-radius: 10px; font-size: 15px; font-weight: 700; cursor: pointer; text-transform: uppercase; margin-top: 15px; transition: 0.3s; }
+    .badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        background: #f3f0e6;
+        color: var(--navy);
+        font-size: 12px;
+        font-weight: 700;
+        letter-spacing: 0.5px;
+        text-transform: uppercase;
+        padding: 6px 14px;
+        border-radius: 20px;
+        margin-bottom: 18px;
+    }
+
+    .field { margin-bottom: 20px; }
+
+    .field label {
+        display: block;
+        font-size: 11px;
+        font-weight: 700;
+        letter-spacing: 1px;
+        text-transform: uppercase;
+        color: var(--navy);
+        margin-bottom: 8px;
+    }
+
+    .input-wrap {
+        position: relative;
+    }
+
+    .input-wrap input {
+        width: 100%;
+        padding: 14px 16px;
+        border: 1.5px solid #e2e8f0;
+        border-radius: 10px;
+        font-size: 15px;
+        font-family: inherit;
+        color: var(--navy);
+        background: #f8fafc;
+        transition: border-color 0.2s, box-shadow 0.2s, background 0.2s;
+    }
+
+    .input-wrap input::placeholder { color: #94a3b8; }
+
+    .input-wrap input:focus {
+        outline: none;
+        border-color: var(--gold);
+        background: #fff;
+        box-shadow: 0 0 0 4px rgba(200,168,75,0.15);
+    }
+
+    .btn-main { width: 100%; padding: 16px; background: var(--navy); color: var(--gold); border: none; border-radius: 10px; font-size: 15px; font-weight: 700; cursor: pointer; text-transform: uppercase; margin-top: 5px; transition: 0.3s; }
     .btn-main:hover { background: #152744; transform: translateY(-2px); }
-
-    .footer-link { text-align: center; margin-top: 30px; font-size: 13px; }
-    .footer-link a { color: var(--navy); font-weight: 700; text-decoration: none; border-bottom: 2px solid var(--gold); }
 
     footer { text-align: center; padding: 20px; color: rgba(255,255,255,0.4); font-size: 10px; }
 
     /* MOBILE ADJUSTMENT */
     @media (max-width: 768px) {
-        .logo { display: none; } /* Hide logos on phones so they don't cover text */
-        header { padding: 40px 15px; }
+        .logo { display: none; }
+        header { padding: 35px 15px; }
     }
 </style>
 </head>
@@ -154,39 +185,32 @@
                 WOMENS WELFARE ORGANIZATION [REGD]<br>
                 VIJAYAWADA
             </div>
-            
-            <div class="divider"></div>
-            
-            <div class="stats">
-                <div class="stat-item"><div class="stat-val">75000+</div><div class="stat-lbl">Students</div></div>
-                <div class="stat-item"><div class="stat-val">100+</div><div class="stat-lbl">Staff</div></div>
-                <div class="stat-item"><div class="stat-val">50+</div><div class="stat-lbl">Years</div></div>
-                <div class="stat-item"><div class="stat-val">Grade 1–10</div><div class="stat-lbl">All Levels</div></div>
-            </div>
         </div>
     </header>
 
     <main>
         <div class="login-card">
             <div class="badge">🎓 Student Portal</div>
-            <h2 style="font-family: 'Playfair Display', serif; font-size: 28px; color: var(--navy); margin-bottom: 10px;">Welcome</h2>
-            <p style="font-size: 14px; color: #64748b; margin-bottom: 30px;">Enter credentials to view your reports.</p>
+            <h2 style="font-family: 'Playfair Display', serif; font-size: 28px; color: var(--navy); margin-bottom: 8px;">Welcome Back</h2>
+            <p style="font-size: 14px; color: #64748b; margin-bottom: 32px;">Enter your credentials to view your reports.</p>
 
             <div id="errorMsg" style="display:none; color: #ef4444; font-size:13px; margin-bottom:20px; text-align:center; padding: 10px; background: #fef2f2; border-radius: 8px;"></div>
 
             <div class="field">
-                <label>Admission No.</label>
-                <div class="input-wrap"><input type="text" id="admissionNo" placeholder="Enter number"></div>
+                <label>Admission Number</label>
+                <div class="input-wrap">
+                    <input type="text" id="admissionNo" placeholder="e.g. 1001" inputmode="numeric">
+                </div>
             </div>
 
             <div class="field">
                 <label>Password</label>
-                <div class="input-wrap"><input type="password" id="password" placeholder="••••••••"></div>
+                <div class="input-wrap">
+                    <input type="password" id="password" placeholder="Enter your password">
+                </div>
             </div>
 
             <button class="btn-main" onclick="doLogin()">Sign In</button>
-
-            
         </div>
     </main>
 
