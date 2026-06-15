@@ -139,58 +139,6 @@
         .logo { display: none; } /* Hide logos on phones so they don't cover text */
         header { padding: 40px 15px; }
     }
-.badge {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    background: #f3f0e6;
-    color: var(--navy);
-    font-size: 12px;
-    font-weight: 700;
-    letter-spacing: 0.5px;
-    text-transform: uppercase;
-    padding: 6px 14px;
-    border-radius: 20px;
-    margin-bottom: 18px;
-}
-
-.field { margin-bottom: 20px; }
-
-.field label {
-    display: block;
-    font-size: 11px;
-    font-weight: 700;
-    letter-spacing: 1px;
-    text-transform: uppercase;
-    color: var(--navy);
-    margin-bottom: 8px;
-}
-
-.input-wrap {
-    position: relative;
-}
-
-.input-wrap input {
-    width: 100%;
-    padding: 14px 16px;
-    border: 1.5px solid #e2e8f0;
-    border-radius: 10px;
-    font-size: 15px;
-    font-family: inherit;
-    color: var(--navy);
-    background: #f8fafc;
-    transition: border-color 0.2s, box-shadow 0.2s, background 0.2s;
-}
-
-.input-wrap input::placeholder { color: #94a3b8; }
-
-.input-wrap input:focus {
-    outline: none;
-    border-color: var(--gold);
-    background: #fff;
-    box-shadow: 0 0 0 4px rgba(200,168,75,0.15);
-}
-       
 </style>
 </head>
 <body>
@@ -220,27 +168,23 @@
 
     <main>
         <div class="login-card">
-           <div class="badge">🎓 Student Portal</div>
-<h2 style="font-family: 'Playfair Display', serif; font-size: 28px; color: var(--navy); margin-bottom: 8px;">Welcome Back</h2>
-<p style="font-size: 14px; color: #64748b; margin-bottom: 32px;">Enter your credentials to view your reports.</p>
+            <div class="badge">🎓 Student Portal</div>
+            <h2 style="font-family: 'Playfair Display', serif; font-size: 28px; color: var(--navy); margin-bottom: 10px;">Welcome</h2>
+            <p style="font-size: 14px; color: #64748b; margin-bottom: 30px;">Enter credentials to view your reports.</p>
 
-<div id="errorMsg" style="display:none; color: #ef4444; font-size:13px; margin-bottom:20px; text-align:center; padding: 10px; background: #fef2f2; border-radius: 8px;"></div>
+            <div id="errorMsg" style="display:none; color: #ef4444; font-size:13px; margin-bottom:20px; text-align:center; padding: 10px; background: #fef2f2; border-radius: 8px;"></div>
 
-<div class="field">
-    <label>Admission Number</label>
-    <div class="input-wrap">
-        <input type="text" id="admissionNo" placeholder="e.g. 1001" inputmode="numeric">
-    </div>
-</div>
+            <div class="field">
+                <label>Admission No.</label>
+                <div class="input-wrap"><input type="text" id="admissionNo" placeholder="Enter number"></div>
+            </div>
 
-<div class="field">
-    <label>Password</label>
-    <div class="input-wrap">
-        <input type="password" id="password" placeholder="Enter your password">
-    </div>
-</div>
+            <div class="field">
+                <label>Password</label>
+                <div class="input-wrap"><input type="password" id="password" placeholder="••••••••"></div>
+            </div>
 
-<button class="btn-main" onclick="doLogin()">Sign In</button>
+            <button class="btn-main" onclick="doLogin()">Sign In</button>
 
             
         </div>
