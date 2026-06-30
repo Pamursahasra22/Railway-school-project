@@ -1136,6 +1136,7 @@ async function changeStudentPassword(admissionNo, password) {
 }
 
 // 12. STAFF APPROVALS (Principal)
+<<<<<<< HEAD
 const PRINCIPAL_API = 'https://railway-school-project-1.onrender.com/api/principal';
 
 async function renderStaffApprovals() {
@@ -1146,14 +1147,28 @@ async function renderStaffApprovals() {
             </div>
             <div id="approvalsList">
                 <p style="text-align:center;padding:20px;color:#888;">Loading…</p>
+=======
+async function renderStaffApprovals() {
+    contentArea.innerHTML = `
+        <div class="card">
+            <div class="card-title" style="font-weight:700;color:#233d91;font-size:15px;margin-bottom:16px;">
+                🧑‍💼 Pending Staff Approvals
+            </div>
+            <div id="approvalsList">
+                <p style="text-align:center;padding:20px;color:#888;">Loading...</p>
+>>>>>>> 13d3d28 (Fix header height and tagline visibility on student login page)
             </div>
         </div>`;
 
     try {
+<<<<<<< HEAD
         const res = await fetch(PRINCIPAL_API + '/pending-users', {
             headers: { 'Authorization': `Bearer ${localStorage.getItem('authToken')}` }
         });
         const pending = await res.json();
+=======
+        const pending = await apiRequest('/principal/pending-users');
+>>>>>>> 13d3d28 (Fix header height and tagline visibility on student login page)
         const wrapper = document.getElementById('approvalsList');
 
         if (!pending || pending.length === 0) {
@@ -1171,15 +1186,25 @@ async function renderStaffApprovals() {
             </thead>
             <tbody>
                 ${pending.map(u => `<tr id="approval-row-${u.id}">
+<<<<<<< HEAD
                     <td>${u.name || '—'}</td>
+=======
+                    <td>${u.name}</td>
+>>>>>>> 13d3d28 (Fix header height and tagline visibility on student login page)
                     <td>${u.email}</td>
                     <td>${u.role}</td>
                     <td>${new Date(u.createdAt).toLocaleDateString('en-IN')}</td>
                     <td style="display:flex;gap:6px;flex-wrap:wrap;">
                         <button class="action-btn" style="background:#22c55e;color:#fff;"
+<<<<<<< HEAD
                             onclick="decideUser('${u.id}', 'approved')">Approve</button>
                         <button class="action-btn" style="background:#ef4444;color:#fff;"
                             onclick="decideUser('${u.id}', 'rejected')">Reject</button>
+=======
+                            onclick="decideUser(${u.id}, 'approved')">Approve</button>
+                        <button class="action-btn" style="background:#ef4444;color:#fff;"
+                            onclick="decideUser(${u.id}, 'rejected')">Reject</button>
+>>>>>>> 13d3d28 (Fix header height and tagline visibility on student login page)
                     </td>
                 </tr>`).join('')}
             </tbody>
@@ -1193,6 +1218,7 @@ async function renderStaffApprovals() {
 async function decideUser(userId, action) {
     if (!confirm(`Are you sure you want to ${action === 'approved' ? 'approve' : 'reject'} this staff member?`)) return;
     try {
+<<<<<<< HEAD
         const res = await fetch(PRINCIPAL_API + '/decide-user', {
             method: 'POST',
             headers: {
@@ -1204,6 +1230,13 @@ async function decideUser(userId, action) {
         const data = await res.json();
         if (!res.ok) throw new Error(data.message || 'Action failed');
         alert(data.message || `User ${action}.`);
+=======
+        const res = await apiRequest('/principal/decide-user', {
+            method: 'POST',
+            body: JSON.stringify({ userId, action })
+        });
+        alert(res.message || `User ${action}.`);
+>>>>>>> 13d3d28 (Fix header height and tagline visibility on student login page)
         const row = document.getElementById(`approval-row-${userId}`);
         if (row) row.remove();
         const tbody = document.querySelector('#approvalsList tbody');
@@ -1212,4 +1245,8 @@ async function decideUser(userId, action) {
         alert('Failed: ' + err.message);
     }
 }
+<<<<<<< HEAD
 init();
+=======
+init();
+>>>>>>> 13d3d28 (Fix header height and tagline visibility on student login page)

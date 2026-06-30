@@ -75,7 +75,7 @@ router.post('/student-login', async (req, res) => {
     if (!isMatch) return res.status(401).json({ message: 'Invalid password.' });
 
     const token = jwt.sign(
-      { id: student.admissionNo, role: 'Student', name: student.name },
+      { id: student.admissionNo, studentId: student.studentId, role: 'Student', name: student.name },
       process.env.JWT_SECRET,
       { expiresIn: '1d' }
     );
